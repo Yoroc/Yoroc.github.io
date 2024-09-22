@@ -78,6 +78,19 @@
             display: none;
         }
 
+        .loading {
+            display: none;
+            font-size: 18px;
+            color: #f1c40f;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
         .message-input {
             height: 120px; /* Increased height for better usability */
             resize: none;
@@ -102,6 +115,8 @@
         <input type="text" id="webhookUrl" placeholder="Enter your Discord webhook URL" required>
         <button onclick="checkWebhook()">Connect</button>
         
+        <div id="loading" class="loading">Connecting...</div>
+        
         <div id="messageContainer" style="display:none;">
             <textarea class="message-input" id="message" placeholder="Enter your message" required></textarea>
             <button onclick="sendMessage()">Send</button>
@@ -114,17 +129,15 @@
     <script>
         async function checkWebhook() {
             const url = document.getElementById('webhookUrl').value;
+            document.getElementById('loading').style.display = 'block'; // Show loading
             const response = await fetch(url, { method: 'POST', body: JSON.stringify({ content: "Test message" }), headers: { 'Content-Type': 'application/json' } });
+            document.getElementById('loading').style.display = 'none'; // Hide loading
 
             if (response.ok) {
                 document.getElementById('messageContainer').style.display = 'block';
-                document.getElementById('resultMessage').innerText = "Connected!";
-                document.getElementById('resultMessage').style.display = 'block';
-                document.getElementById('resultMessage').style.color = 'green';
+                showMessage("Connected!", "green");
             } else {
-                document.getElementById('resultMessage').innerText = "Invalid webhook URL!";
-                document.getElementById('resultMessage').style.display = 'block';
-                document.getElementById('resultMessage').style.color = 'red';
+                showMessage("Invalid webhook URL!", "red");
             }
         }
 
@@ -133,15 +146,19 @@
             const message = document.getElementById('message').value;
             const response = await fetch(url, { method: 'POST', body: JSON.stringify({ content: message }), headers: { 'Content-Type': 'application/json' } });
 
-            const resultMessage = document.getElementById('resultMessage');
             if (response.ok) {
-                resultMessage.innerText = "Message sent successfully!";
-                resultMessage.style.color = 'green';
+                showMessage("Message sent successfully!", "green");
             } else {
-                resultMessage.innerText = "Failed to send message.";
-                resultMessage.style.color = 'red';
+                showMessage("Failed to send message.", "red");
             }
+        }
+
+        function showMessage(text, color) {
+            const resultMessage = document.getElementById('resultMessage');
+            resultMessage.innerText = text;
+            resultMessage.style.color = color;
             resultMessage.style.display = 'block';
+            resultMessage.style.animation = 'fadeIn 1s';
         }
     </script>
 </body>
