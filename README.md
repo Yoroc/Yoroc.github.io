@@ -2,7 +2,7 @@
 
 This is the main page of my GitHub project. You can visit the full website here:
 
-[Go to Home Page](https://ilyass590.github.io/home.html)
+[Go to Home Page](https://yoroc.github.io/home.html)
 
 ## Features
 - Cool animations
@@ -10,4 +10,4 @@ This is the main page of my GitHub project. You can visit the full website here:
 - And more!
 
 ## How to Use
-Visit the [home page](https://ilyass590.github.io/home.html) to explore all the features!
+Visit the [home page](https://yoroc.github.io/home.html) to explore all the features!
