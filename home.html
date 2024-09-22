@@ -18,16 +18,10 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #282c34;
+            background: linear-gradient(135deg, #282c34, #4a90e2);
             color: white;
             font-family: 'Arial', sans-serif;
             overflow: hidden;
-            animation: backgroundAnimation 5s infinite alternate;
-        }
-
-        @keyframes backgroundAnimation {
-            0% { background-color: #282c34; }
-            100% { background-color: #4a90e2; }
         }
 
         .container {
@@ -35,7 +29,7 @@
             padding: 30px;
             border: 2px solid white;
             border-radius: 15px;
-            background-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             animation: fadeIn 1s;
             max-width: 500px;
@@ -47,13 +41,24 @@
             to { opacity: 1; }
         }
 
-        input, button {
+        input, textarea, button {
             padding: 12px;
-            margin: 10px;
+            margin: 10px 0;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             width: 100%;
+        }
+
+        input, textarea {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: background-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
         }
 
         button {
@@ -74,7 +79,7 @@
         }
 
         .message-input {
-            height: 100px; /* Increased height for better usability */
+            height: 120px; /* Increased height for better usability */
             resize: none;
         }
 
@@ -138,7 +143,6 @@
             }
             resultMessage.style.display = 'block';
         }
-      
     </script>
 </body>
 </html>
