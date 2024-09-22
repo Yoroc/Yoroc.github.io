@@ -8,7 +8,7 @@
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="Discord Webhook Sender">
     <meta property="og:description" content="Easily send messages to your Discord channel using webhooks!">
-    <meta property="og:image" content="https://picsart.teamhydra.dev/picsart-ee32181c-82f0-49fd-b2dd-0990d98f8f3d.png"> <!-- Replace with a link to your image -->
+    <meta property="og:image" content="URL_TO_YOUR_IMAGE.jpg"> <!-- Replace with a link to your image -->
     <meta property="og:url" content="https://ilyass590.github.io/webhooker/">
 
     <style>
@@ -38,6 +38,8 @@
             background-color: rgba(255, 255, 255, 0.1);
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             animation: fadeIn 1s;
+            max-width: 500px;
+            width: 90%;
         }
 
         @keyframes fadeIn {
@@ -51,6 +53,7 @@
             border: none;
             border-radius: 5px;
             font-size: 16px;
+            width: 100%;
         }
 
         button {
@@ -68,6 +71,11 @@
             margin-top: 20px;
             font-size: 18px;
             display: none;
+        }
+
+        .message-input {
+            height: 100px; /* Increased height for better usability */
+            resize: none;
         }
 
         .discord-link {
@@ -90,7 +98,7 @@
         <button onclick="checkWebhook()">Connect</button>
         
         <div id="messageContainer" style="display:none;">
-            <input type="text" id="message" placeholder="Enter your message" required>
+            <textarea class="message-input" id="message" placeholder="Enter your message" required></textarea>
             <button onclick="sendMessage()">Send</button>
         </div>
 
