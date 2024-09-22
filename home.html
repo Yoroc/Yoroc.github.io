@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Webhook Sender</title>
+    <title>Discord Webhook Sender with Embed</title>
 
     <!-- Add a favicon -->
     
@@ -130,6 +130,14 @@
             <button onclick="sendMessage()">Send</button>
         </div>
 
+        <div class="embed-section" id="embedContainer" style="display:none;">
+            <h2>Create Embed</h2>
+            <input type="text" id="embedTitle" placeholder="Embed Title">
+            <input type="text" id="embedDescription" placeholder="Embed Description">
+            <input type="color" id="embedColor" value="#3498db" title="Embed Color">
+            <button onclick="sendEmbed()">Send Embed</button>
+        </div>
+
         <div class="message" id="resultMessage"></div>
         <a class="discord-link" href="https://discord.gg/4bE8Cbvv84" target="_blank">Join our Discord Server!</a>
     </div>
@@ -162,6 +170,7 @@
 
                 if (response.ok) {
                     document.getElementById('messageContainer').style.display = 'block';
+                    document.getElementById('embedContainer').style.display = 'block';
                     showMessage("Connected!", "green");
                 } else {
                     showMessage("Invalid webhook URL!", "red");
@@ -189,6 +198,35 @@
             }
         }
 
+        async function sendEmbed() {
+            const url = document.getElementById('webhookUrl').value;
+            const embedTitle = document.getElementById('embedTitle').value;
+            const embedDescription = document.getElementById('embedDescription').value;
+            const embedColor = document.getElementById('embedColor').value.replace('#', ''); // Remove '#' from color
+
+            const embedData = {
+                embeds: [
+                    {
+                        title: embedTitle,
+                        description: embedDescription,
+                        color: parseInt(embedColor, 16) // Convert hex to decimal
+                    }
+                ]
+            };
+
+            const response = await fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(embedData),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.ok) {
+                showMessage("Embed sent successfully!", "green");
+            } else {
+                showMessage("Failed to send embed.", "red");
+            }
+        }
+
         function showMessage(text, color) {
             const resultMessage = document.getElementById('resultMessage');
             resultMessage.innerText = text;
@@ -196,6 +234,6 @@
             resultMessage.style.display = 'block';
         }
     </script>
-<h1 aligh="center">Ty yasser For using our webiste</h1>
+    <h1 align="center">Ty yasser For using our website</h1>
 </body>
 </html>
