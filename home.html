@@ -13,7 +13,7 @@
             height: 100vh;
             background-color: #282c34;
             color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             overflow: hidden;
             animation: backgroundAnimation 5s infinite alternate;
         }
@@ -25,10 +25,11 @@
 
         .container {
             text-align: center;
-            padding: 20px;
+            padding: 30px;
             border: 2px solid white;
-            border-radius: 10px;
+            border-radius: 15px;
             background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             animation: fadeIn 1s;
         }
 
@@ -38,7 +39,7 @@
         }
 
         input, button {
-            padding: 10px;
+            padding: 12px;
             margin: 10px;
             border: none;
             border-radius: 5px;
@@ -49,6 +50,7 @@
             cursor: pointer;
             background-color: #4a90e2;
             color: white;
+            transition: background-color 0.3s;
         }
 
         button:hover {
@@ -59,6 +61,18 @@
             margin-top: 20px;
             font-size: 18px;
             display: none;
+        }
+
+        .discord-link {
+            margin-top: 20px;
+            color: #61dafb;
+            text-decoration: none;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+        .discord-link:hover {
+            color: #21a1f1;
         }
     </style>
 </head>
@@ -74,6 +88,7 @@
         </div>
 
         <div class="message" id="resultMessage"></div>
+        <a class="discord-link" href="https://discord.gg/4bE8Cbvv84" target="_blank">Join our Discord Server!</a>
     </div>
 
     <script>
@@ -108,9 +123,6 @@
             }
             resultMessage.style.display = 'block';
         }
-        
-        
-
     </script>
 </body>
 </html>
